@@ -21,7 +21,7 @@
             fa(:icon="closed").plus-square
           span {{ text }}
         template(v-else-if="value")
-          router-link(:to="{ name: value }", v-if="type === 'router-link'").value
+          router-link(:to="{ path: value }", v-if="type === 'router-link'").value
             fa(:icon="defaultIcon")
             | {{ text }}
           a(:href="value", target="_blank" v-else).value
@@ -33,103 +33,105 @@
 </template>
 
 <script>
-  export default {
-    name: 'Branch',
-    props: {
-      text: {
-        type: String,
-        required: true,
-        default: () => ''
-      },
-      nodes: {
-        type: Array,
-        default: () => []
-      },
-      type: {
-        type: String,
-        default: () => ''
-      },
-      value: {
-        type: String,
-        default: () => ''
-      },
-      closed: {
-        type: String | Object | Array
-      },
-      opened: {
-        type: String | Object | Array
-      },
-      defaultIcon: {
-        type: String | Object | Array
-      },
-      editable: {
-        type: Boolean,
-        default: () => true
-      }
+export default {
+  name: "Branch",
+  props: {
+    text: {
+      type: String,
+      required: true,
+      default: () => ""
     },
-    data () {
-      return {
-        open: false,
-        clicks: 0,
-        timer: null,
-        newNode: {
-          text: "Google",
-          type: "link",
-          value: "https://www.google.com"
-        },
-        creating: false,
-        urlRegex: new RegExp(/^(https?:\/\/)?(www\.|[a-z\d]+\.)?[a-z]+(\.[a-z]{2,3}|:\d{2,5})(\.[a-z]{2,3})?(\/([\w\d]+)?)*((\?|&)[\w\d]+=[\w\d]+)*/)
-      }
+    nodes: {
+      type: Array,
+      default: () => []
     },
-    methods: {
-      createNewNode() {
-        if (this.editable) {
-          this.clicks++
-          if (this.clicks === 1) {
-            const app = this
-            this.timer = setTimeout(() => {
-              app.toggle()
-              app.clicks = 0
-            }, 280);
-          } else {
-            clearTimeout(this.timer)
-            this.clicks = 0
-            this.creating = true
-          }
+    type: {
+      type: String,
+      default: () => ""
+    },
+    value: {
+      type: String,
+      default: () => ""
+    },
+    closed: {
+      type: String | Object | Array
+    },
+    opened: {
+      type: String | Object | Array
+    },
+    defaultIcon: {
+      type: String | Object | Array
+    },
+    editable: {
+      type: Boolean,
+      default: () => true
+    }
+  },
+  data() {
+    return {
+      open: false,
+      clicks: 0,
+      timer: null,
+      newNode: {
+        text: "Google",
+        type: "link",
+        value: "https://www.google.com"
+      },
+      creating: false,
+      urlRegex: new RegExp(
+        /^(https?:\/\/)?(www\.|[a-z\d]+\.)?[a-z]+(\.[a-z]{2,3}|:\d{2,5})(\.[a-z]{2,3})?(\/([\w\d]+)?)*((\?|&)[\w\d]+=[\w\d]+)*/
+      )
+    };
+  },
+  methods: {
+    createNewNode() {
+      if (this.editable) {
+        this.clicks++;
+        if (this.clicks === 1) {
+          const app = this;
+          this.timer = setTimeout(() => {
+            app.toggle();
+            app.clicks = 0;
+          }, 280);
         } else {
-          this.toggle
+          clearTimeout(this.timer);
+          this.clicks = 0;
+          this.creating = true;
         }
-      },
-      cancel () {
-        this.creating = false
-        this.newNode = {
-          text: 'Google',
-          type: 'link',
-          value: 'https://www.google.com'
-        }
-        this.$emit('creating', this.creating)
-        this.$emit('newNode', this.newNode)
-      },
-      save() {
-        this.nodes.push(this.newNode)
-        this.creating = false
-        this.newNode = {
-          text: "Google",
-          type: "link",
-          value: "https://www.google.com"
-        }
-        this.$emit('creating', this.creating)
-        this.$emit('newNode', this.newNode)
-        this.$emit("nodes", this.nodes)
-      },
-      toggle () {
-        this.open = !this.open
-      },
-      checkLast (i) {
-        return (i + 1) === this.nodes.length
+      } else {
+        this.toggle;
       }
+    },
+    cancel() {
+      this.creating = false;
+      this.newNode = {
+        text: "Google",
+        type: "link",
+        value: "https://www.google.com"
+      };
+      this.$emit("creating", this.creating);
+      this.$emit("newNode", this.newNode);
+    },
+    save() {
+      this.nodes.push(this.newNode);
+      this.creating = false;
+      this.newNode = {
+        text: "Google",
+        type: "link",
+        value: "https://www.google.com"
+      };
+      this.$emit("creating", this.creating);
+      this.$emit("newNode", this.newNode);
+      this.$emit("nodes", this.nodes);
+    },
+    toggle() {
+      this.open = !this.open;
+    },
+    checkLast(i) {
+      return i + 1 === this.nodes.length;
     }
   }
+};
 </script>
 
 <style lang="sass" scoped>
